@@ -1,0 +1,6 @@
+IRC_Bot
+*.pro
+*.pro.user
+Makefile
+*.o
+*~

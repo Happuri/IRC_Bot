@@ -1,0 +1,4 @@
+2014-06-09 01:36 -!- mempobot(mempobot@i.love.debian.org) has joined #lab
+2014-06-09 01:37 -!- user1(user1@i.love.debian.org) has joined #lab
+2014-06-09 01:38 <user> hello
+2014-06-09 01:38 <user1> hi!
