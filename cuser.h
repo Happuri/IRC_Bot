@@ -8,12 +8,12 @@ using namespace std;
 class cUser
 {
 public:
-    cUser(fstream &file);
+    cUser(string mSeenTime, string mSeenDate);
     void Save();
     void Load();
 private:
-    int mSeenTime;
-
+    string mSeenTime;
+    string mSeenDate;
 };
 
 #endif // CUSER_H

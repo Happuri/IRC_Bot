@@ -1,5 +1,9 @@
 #include "cuser.h"
 
-cUser::cUser(fstream &file)
+cUser::cUser(string mSeenTime, string mSeenDate)
 {
+    this->mSeenTime=mSeenTime;
+    this->mSeenDate=mSeenDate;
+
+
 }
