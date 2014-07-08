@@ -1,0 +1,10 @@
+DIR=ii-data/
+HOST="" # server irc
+NICK="nice_bot" # bot nickname
+PORT=6668
+CHAN="#test"
+SERV_PATH=$DIR$HOST
+
+FROM=$SERV_PATH/$CHAN/out
+TO=$SERV_PATH/$CHAN/in
+
