@@ -8,7 +8,7 @@ using namespace std;
 class cUser
 {
 public:
-    cUser(string mSeenTime, string mSeenDate);
+    cUser(string &mSeenTime, string &mSeenDate);
     void Save();
     void Load();
 private:
