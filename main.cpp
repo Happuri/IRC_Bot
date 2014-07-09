@@ -33,5 +33,7 @@ int main(int argc, char* argv[]) {
 	cBot testing(botname, from, to);
 	testing.tailF();
 
+	testing.sayHelloWorld();
+
 	return 0;
 }

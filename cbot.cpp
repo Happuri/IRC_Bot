@@ -8,7 +8,7 @@ cBot::cBot(string &myNick, string &filename, string &outFilename) {
 }
 
 void cBot::tailF() {
-	string tmp = "", tmp2 = "", joined = "has joined";
+	string tmp = "", tmp2 = "", joined = "has joined", wordPing = "PING";
 	size_t found;
 	fstream file;
 	int tmpLen = 0;
@@ -35,6 +35,14 @@ void cBot::tailF() {
 					if (found != string::npos) {
 						cout << "---New user joined!---" << endl;
 						addUser(splitString(tmp));
+					}
+					
+					found = tmp.find(wordPing);
+					if (found != string::npos)
+					{
+						cout << "---PING---" << endl;
+						PingPong();
+						
 					}
 				}
 			}
@@ -116,7 +124,6 @@ void cBot::sayHello(string &username) {
 	string toSay = "Hello "+nick;
 	say(toSay);
 
-
 }
 
 string cBot::getNick(string &all) {
@@ -125,3 +132,16 @@ string cBot::getNick(string &all) {
 
 
 }
+
+void cBot::sayHelloWorld(){
+	string toSay = "Hello channel!";
+	say(toSay);
+}
+
+void cBot::PingPong(){
+	string wordPong = "PONG";
+	say(wordPong);
+	
+}
+		
+	

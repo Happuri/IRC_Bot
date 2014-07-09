@@ -19,6 +19,8 @@ public:
     void displayMap();                      // displays contents of a map
     void say(string &what);
     void sayHello(string &username);
+    void sayHelloWorld();
+    void PingPong();
 private:
     void addUser(vector<string> data);      // getting data from tailF() and saving to map
     int checkLenght(fstream &file);         // returns numbers of characters in file
