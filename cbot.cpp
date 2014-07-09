@@ -47,7 +47,6 @@ void cBot::tailF() {
 				}
 			}
 		}
-
 		//cout << "\nsleeping\n" << endl;
 		sleep(5);
 		file.close();
@@ -84,8 +83,6 @@ void cBot::addUser(vector<string> data) {
 	pair<map<string, cUser>::iterator, bool> ret;
 	ret = this->usersList.insert(pair<string, cUser>(nickname, newUser));
 	sayHello(nickname);
-	// TODO: Say hello
-
 	displayMap();
 }
 
@@ -96,10 +93,8 @@ vector<string> cBot::splitString(string &toSplit) {
 
 	while ((pos = toSplit.find(delimiter)) != string::npos) {
 		token = toSplit.substr(0, pos);
-		//cout << token << "; " << i << endl;
 		toSplit.erase(0, pos + delimiter.length());
 		data.push_back(token);
-
 	}
 	return data;
 
@@ -108,29 +103,29 @@ vector<string> cBot::splitString(string &toSplit) {
 void cBot::displayMap() {
 	cout << "---DISPLAYING MAP!!---" << endl;
 	map<string, cUser>::iterator it = this->usersList.begin();
-	for (it = this->usersList.begin(); it != this->usersList.end(); ++it) cout << it->first << endl;
-		//cout << it->first << " => " << it->second << endl;
+	for (it = this->usersList.begin(); it != this->usersList.end(); ++it)
+		cout << it->first << endl;
+	//cout << it->first << " => " << it->second << endl;
 	cout << "-----------------" << endl;
 }
 
 void cBot::say(string &what) {
-	string command="echo "+ what+ ">> " +outFilename;
-	system(command.c_str());
+	string command = "echo " + what + ">> " + outFilename;
+	system(command.c_str()); // TODO
 }
 
 void cBot::sayHello(string &username) {
 	string nick = getNick(username);
-	if(nick==this->myNick) return;
-	string toSay = "Hello "+nick;
+	if (nick == this->myNick)
+		return;
+	string toSay = "Hello " + nick;
 	say(toSay);
 
 }
 
 string cBot::getNick(string &all) {
 	size_t pos = all.find("(");
-	return all.substr(0,pos);
-
-
+	return all.substr(0, pos);
 }
 
 void cBot::sayHelloWorld(){

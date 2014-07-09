@@ -1,8 +1,10 @@
 #!/bin/bash  
 source conf/irc.conf
 
-date >> bot.log
-./start-bot.sh  &> bot.log
+date >> bot.log 
+set -x
+./start-ii.sh
+nohup ./start-bot.sh  &> bot.log &
 
 
 
