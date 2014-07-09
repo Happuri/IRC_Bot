@@ -12,3 +12,4 @@ ii-data/*
 nohup.out
 example.txt
 Debug/*.d
+/Debug/
