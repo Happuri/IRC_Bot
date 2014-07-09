@@ -2,7 +2,7 @@
 source conf/irc.conf
 
 date >> bot.log
-./start-bot.sh  &> bot.log
+nohup ./start-bot.sh  &> bot.log &
 
 
 

@@ -11,3 +11,4 @@ conf/irc.conf
 ii-data/*
 nohup.out
 example.txt
+Debug/*.d
