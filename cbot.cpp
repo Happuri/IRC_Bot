@@ -80,6 +80,14 @@ void cBot::addUser(vector<string> data) {
 	string &date = data.at(0);
 	string &time = data.at(1);
 
+	// if element exist
+	map<string, cUser>::iterator it = this->usersList.find(nickname);
+	if (it != usersList.end()) {
+		// says hello again and returns
+		string toSay = "Hello again, " + getNick(nickname);
+		say(toSay);
+		return;
+	}
 	cUser newUser(time, date);
 
 	pair<map<string, cUser>::iterator, bool> ret;
@@ -157,8 +165,9 @@ bool cBot::parse(string line) {
 
 	pair<map<string, cUser>::iterator, bool> ret;
 	ret = this->usersList.insert(pair<string, cUser>(nickname, newUser));
+	save(nickname,time,date);
 
-	string &toSay = "Hello again, " + getNick(nickname);
+	string toSay = "Hello again, " + getNick(nickname);
 	say(toSay);
 
 	return true;
@@ -187,14 +196,20 @@ bool cBot::save() {
 	map<string, cUser>::iterator it = this->usersList.begin();
 	for (it = this->usersList.begin(); it != this->usersList.end(); ++it)
 		file << it->first << separator << it->second.toString() << separator
-				<< endl;
+				<< "\n";
+	file.close();
+	return true;
+}
+
+bool cBot::save(string &nick, string &time, string &date) {
+	fstream file;
+	file.open(filenameUsersList.c_str(), ios::out | ios::app);
+	file << nick << separator << date << separator << time << separator << "\n";
 	file.close();
 	return true;
 }
 
 cBot::~cBot() {
-	cout << "Start desctructor, saving map to file" << endl;
-	save();
 
 }
 

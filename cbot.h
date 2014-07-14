@@ -14,6 +14,7 @@ class cBot
 {
 public:
     cBot(string &myNick, string &filename, string &outFilename);                  // open file to read
+    ~cBot();								// destructor
     void tailF();                           // equivalent "tail -f" bash command, notify if new user joins
     void displayFile(fstream &file);        // displays contents of a file
     void displayMap();                      // displays contents of a map
@@ -23,6 +24,7 @@ public:
     void PingPong();
     bool load();							// loading users from file to map
     bool save();							// saving map with users to file
+    bool save(string &nick, string &time, string &date); // saving user to file
 
 private:
     void addUser(vector<string> data);      // getting data from tailF() and saving to map
