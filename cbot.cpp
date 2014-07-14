@@ -4,7 +4,10 @@ cBot::cBot(string &myNick, string &filename, string &outFilename) {
 	this->myNick = myNick;
 	this->filename = filename;
 	this->outFilename = outFilename;
-	//this->usersList.insert(pair<string, cUser>(myNick, NULL));
+	this->filenameUsersList = "users.txt";
+	this->separator = "|";
+	if (!load())
+		cout << "Some error with loads users list" << endl;
 }
 
 void cBot::tailF() {
@@ -34,15 +37,14 @@ void cBot::tailF() {
 					// if new user has joined adds him to map
 					if (found != string::npos) {
 						cout << "---New user joined!---" << endl;
-						addUser(splitString(tmp));
+						addUser(splitString(tmp, " "));
 					}
-					
+
 					found = tmp.find(wordPing);
-					if (found != string::npos)
-					{
+					if (found != string::npos) {
 						cout << "---PING---" << endl;
 						PingPong();
-						
+
 					}
 				}
 			}
@@ -73,10 +75,10 @@ void cBot::displayFile(fstream &file) {
 
 void cBot::addUser(vector<string> data) {
 	// reading data from vector
-	string nickname, date, time;
-	nickname = data.at(3);
-	date = data.at(0);
-	time = data.at(1);
+
+	string &nickname = data.at(3);
+	string &date = data.at(0);
+	string &time = data.at(1);
 
 	cUser newUser(time, date);
 
@@ -86,8 +88,8 @@ void cBot::addUser(vector<string> data) {
 	displayMap();
 }
 
-vector<string> cBot::splitString(string &toSplit) {
-	string delimiter = " ", token;
+vector<string> cBot::splitString(string &toSplit, string delimiter) {
+	string token;
 	size_t pos = 0;
 	vector<string> data;
 
@@ -104,8 +106,7 @@ void cBot::displayMap() {
 	cout << "---DISPLAYING MAP!!---" << endl;
 	map<string, cUser>::iterator it = this->usersList.begin();
 	for (it = this->usersList.begin(); it != this->usersList.end(); ++it)
-		cout << it->first << endl;
-	//cout << it->first << " => " << it->second << endl;
+		cout << it->first << " => " << it->second.toString() << endl;
 	cout << "-----------------" << endl;
 }
 
@@ -128,15 +129,72 @@ string cBot::getNick(string &all) {
 	return all.substr(0, pos);
 }
 
-void cBot::sayHelloWorld(){
+void cBot::sayHelloWorld() {
 	string toSay = "Hello channel!";
 	say(toSay);
 }
 
-void cBot::PingPong(){
+void cBot::PingPong() {
 	string wordPong = "PONG";
 	say(wordPong);
-	
+
 }
-		
-	
+
+bool cBot::parse(string line) {
+	// to parse:
+	// mempobot(mempobot@i.love.debian.org)|2014-06-09|01:36|
+
+	if (line.empty())
+		return false;
+
+	vector<string> toSave = splitString(line, separator);
+
+	string &nickname = toSave.at(0);
+	string &date = toSave.at(1);
+	string &time = toSave.at(2);
+
+	cUser newUser(time, date);
+
+	pair<map<string, cUser>::iterator, bool> ret;
+	ret = this->usersList.insert(pair<string, cUser>(nickname, newUser));
+
+	string &toSay = "Hello again, " + getNick(nickname);
+	say(toSay);
+
+	return true;
+
+}
+
+bool cBot::load() {
+	fstream file;
+	file.open(filenameUsersList.c_str(), ios::in);
+	string tmp;
+	while (!file.eof()) {
+		getline(file, tmp); //cout << tmp << endl;
+		parse(tmp);
+	}
+	displayMap();
+
+	file.close();
+	return true;
+}
+
+bool cBot::save() {
+	// open file
+	fstream file;
+	file.open(filenameUsersList.c_str(), ios::out | ios::trunc);
+
+	map<string, cUser>::iterator it = this->usersList.begin();
+	for (it = this->usersList.begin(); it != this->usersList.end(); ++it)
+		file << it->first << separator << it->second.toString() << separator
+				<< endl;
+	file.close();
+	return true;
+}
+
+cBot::~cBot() {
+	cout << "Start desctructor, saving map to file" << endl;
+	save();
+
+}
+

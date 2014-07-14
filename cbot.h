@@ -21,15 +21,21 @@ public:
     void sayHello(string &username);
     void sayHelloWorld();
     void PingPong();
+    bool load();							// loading users from file to map
+    bool save();							// saving map with users to file
+
 private:
     void addUser(vector<string> data);      // getting data from tailF() and saving to map
     int checkLenght(fstream &file);         // returns numbers of characters in file
     string getNick(string &all);
-    vector<string> splitString(string &toSplit); // tails line to vector of strings
+    vector<string> splitString(string &toSplit, string delimiter); // tails line to vector of strings
+    bool parse(string line);				// parsing
 
+    string separator;
     string myNick;
     string outFilename;
     string filename;                        // name of file to read
+    string filenameUsersList; 				// name of file with users
     map <string,cUser> usersList;           // map - contains nicknames, seen date, etc
 
 
