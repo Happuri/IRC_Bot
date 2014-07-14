@@ -9,8 +9,7 @@ class cUser
 {
 public:
     cUser(string &mSeenTime, string &mSeenDate);
-    void Save();
-    void Load();
+    string toString();
 private:
     string mSeenTime;
     string mSeenDate;

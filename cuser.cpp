@@ -5,3 +5,8 @@ cUser::cUser(string &mSeenTime, string &mSeenDate) {
 	this->mSeenDate = mSeenDate;
 
 }
+
+string cUser::toString() {
+	return mSeenDate+"|"+mSeenTime;
+
+}
