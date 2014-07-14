@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS :=
+LIBS := -lxml++-2.6 -lglibmm-2.4 -lxml2 -lgobject-2.0 -lsigc-2.0 -lglib-2.0
 
