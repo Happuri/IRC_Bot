@@ -169,8 +169,8 @@ bool cBot::parse(string line) {
 	ret = this->usersList.insert(pair<string, cUser>(nickname, newUser));
 
 
-	string toSay = "Hello again, " + getNick(nickname);
-	say(toSay);
+	//string toSay = "Hello again, " + getNick(nickname);
+	//say(toSay);
 
 	return true;
 
