@@ -3,11 +3,9 @@
 source conf/irc.conf 
 set -x 
 
-#echo "/j $CHAN" >> $SERV_PATH/in
+echo "Starting bot $NICK on $HOST server"
 
-#echo $FROM 
-#echo $TO
 
 LOGFILE=bot$(date +"%Y-%m-%d-%H-%M-%S").log
 
-nohup Debug/IRC_Bot $1 $2 $3 &> $LOGFILE &
+nohup Debug/IRC_Bot $NICK $HOST $1 &> $LOGFILE &
