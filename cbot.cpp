@@ -1,13 +1,27 @@
 #include "cbot.h"
 
-cBot::cBot(string &myNick, string &filename, string &outFilename) {
+cBot::cBot(string &myNick, string &server, string &room) {
+	cout << "\nStarting bot" << endl;
+	string dir_ii = "ii-data/";
+	string dir_u = "users/";
 	this->myNick = myNick;
-	this->filename = filename;
-	this->outFilename = outFilename;
-	this->filenameUsersList = "users.txt";
+	this->server = server;
+	this->room = room;
+	this->filename = dir_ii + server + "/" + room + "/out";
+	this->outFilename = dir_ii + server + "/" + room + "/in";
+	this->filenameUsersList = dir_u + server + "-" + room + "-users.txt";
 	this->separator = "|";
+
+	string join = "echo /j '" + room + "' >> " + dir_ii + server + "/in";
+	cout << "Executing command: " << join << endl;
+	system(join.c_str());
+	string createFile = "touch " + filenameUsersList;
+	cout << "Executing command: " << createFile << endl;
+	system(createFile.c_str()); // TODO nicer way to create file if not exist
+
 	if (!load())
-		cout << "Some error with loads users list" << endl;
+		cout << "Error with loads users list" << endl;
+	printInfo();
 }
 
 void cBot::tailF() {
@@ -84,9 +98,9 @@ void cBot::addUser(vector<string> data) {
 	map<string, cUser>::iterator it = this->usersList.find(nickname);
 	if (it != usersList.end()) {
 		// says hello again and returns
-		if (getNick(nickname) == this->myNick){
+		if (getNick(nickname) == this->myNick) {
 			return;
-			}
+		}
 		string toSay = "Hello again, " + getNick(nickname);
 		say(toSay);
 		return;
@@ -97,7 +111,7 @@ void cBot::addUser(vector<string> data) {
 	ret = this->usersList.insert(pair<string, cUser>(nickname, newUser));
 	sayHello(nickname);
 
-	save(nickname,time,date);
+	save(nickname, time, date);
 	displayMap();
 }
 
@@ -119,12 +133,12 @@ void cBot::displayMap() {
 	cout << "---DISPLAYING MAP!!---" << endl;
 	map<string, cUser>::iterator it = this->usersList.begin();
 	for (it = this->usersList.begin(); it != this->usersList.end(); ++it)
-		cout << it->first << " => " << it->second.toString() << endl;
-	cout << "-----------------" << endl;
+		cout << "   " << it->first << " => " << it->second.toString() << endl;
+	cout << "------END MAP---------" << endl;
 }
 
 void cBot::say(string &what) {
-	string command = "echo " + what + ">> " + outFilename;
+	string command = "echo '" + what + "' >> " + outFilename;
 	system(command.c_str()); // TODO
 }
 
@@ -171,7 +185,6 @@ bool cBot::parse(string line) {
 	pair<map<string, cUser>::iterator, bool> ret;
 	ret = this->usersList.insert(pair<string, cUser>(nickname, newUser));
 
-
 	//string toSay = "Hello again, " + getNick(nickname);
 	//say(toSay);
 
@@ -183,9 +196,10 @@ bool cBot::load() {
 	fstream file;
 	file.open(filenameUsersList.c_str(), ios::in);
 	string tmp;
-	cout << "Loading users list form file: " << filenameUsersList << endl;
+	cout << "\nLoading users list form file: " << filenameUsersList << endl;
 	while (!file.eof()) {
-		getline(file, tmp); cout << tmp << endl;
+		getline(file, tmp);
+		cout << tmp << endl;
 		parse(tmp);
 	}
 	displayMap();
@@ -210,8 +224,9 @@ bool cBot::save() {
 bool cBot::save(string &nick, string &time, string &date) {
 	fstream file;
 	file.open(filenameUsersList.c_str(), ios::out | ios::app);
-	if(!file.good()) {
-		cout << "Error with saving user to file. Can't open file: " << filenameUsersList << endl;
+	if (!file.good()) {
+		cout << "Error with saving user to file. Can't open file: "
+				<< filenameUsersList << endl;
 		return false;
 	}
 
@@ -224,6 +239,20 @@ bool cBot::save(string &nick, string &time, string &date) {
 }
 
 cBot::~cBot() {
-	cout << "--------------------------------------------------------------------" << endl;
+	cout
+			<< "\n--------------------------------------------------------------------"
+			<< endl;
 }
+
+void cBot::printInfo() {
+	cout << "\n        ---------INFO---------" << endl;
+	cout << "       Bot nickname: " << myNick << endl;
+	cout << "           IRC room: " << room << endl;
+	cout << "             Server: " << server << endl;
+	cout << "Reading output from: " << filename << endl;
+	cout << "          Saying to: " << outFilename << endl;
+	cout << "              Users: " << filenameUsersList << endl;
+	cout << "        -------END INFO-------" << endl;
+}
+
 

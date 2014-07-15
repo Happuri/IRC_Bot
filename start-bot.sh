@@ -3,10 +3,11 @@
 source conf/irc.conf 
 set -x 
 
-echo "/j $CHAN" >> $SERV_PATH/in
+#echo "/j $CHAN" >> $SERV_PATH/in
 
 #echo $FROM 
 #echo $TO
 
-#date >> $LOGFILE
-Debug/IRC_Bot $NICK $FROM $TO #&> $LOGFILE
+LOGFILE=bot$(date +"%Y-%m-%d-%H-%M-%S").log
+
+nohup Debug/IRC_Bot $1 $2 $3 &> $LOGFILE &
