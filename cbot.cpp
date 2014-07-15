@@ -4,12 +4,14 @@ cBot::cBot(string &myNick, string &server, string &room) {
 	cout << "\nStarting bot" << endl;
 	string dir_ii = "ii-data/";
 	string dir_u = "users/";
+	string dir_data = "data/";
 	this->myNick = myNick;
 	this->server = server;
 	this->room = room;
 	this->filename = dir_ii + server + "/" + room + "/out";
 	this->outFilename = dir_ii + server + "/" + room + "/in";
 	this->filenameUsersList = dir_u + server + "-" + room + "-users.txt";
+	this->fileDataInfo = dir_data + server + "/" + room + "/data.txt";
 	this->separator = "|";
 
 	string join = "echo /j '" + room + "' >> " + dir_ii + server + "/in";
@@ -18,6 +20,7 @@ cBot::cBot(string &myNick, string &server, string &room) {
 	string createFile = "touch " + filenameUsersList;
 	cout << "Executing command: " << createFile << endl;
 	system(createFile.c_str()); // TODO nicer way to create file if not exist
+
 
 	if (!load())
 		cout << "Error with loads users list" << endl;
@@ -89,7 +92,10 @@ void cBot::displayFile(fstream &file) {
 
 void cBot::addUser(vector<string> data) {
 	// reading data from vector
-
+	
+	if(data.at(2) != "-!-"){
+		return;
+	}
 	string &nickname = data.at(3);
 	string &date = data.at(0);
 	string &time = data.at(1);
@@ -252,6 +258,7 @@ void cBot::printInfo() {
 	cout << "Reading output from: " << filename << endl;
 	cout << "          Saying to: " << outFilename << endl;
 	cout << "              Users: " << filenameUsersList << endl;
+	cout << "               Data: " << fileDataInfo << endl;
 	cout << "        -------END INFO-------" << endl;
 }
 

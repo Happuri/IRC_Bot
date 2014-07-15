@@ -14,7 +14,7 @@
 
 using namespace std;
 // how to start:
-// Debug/Bot nick server #room
+// Debug/Bot nick server room
 int main(int argc, char* argv[]) {
 	string botname, server, room, room2;
 

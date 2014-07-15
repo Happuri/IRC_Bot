@@ -42,6 +42,7 @@ private:
     string outFilename;						// saying to this file
     string filename;                        // name of file to read
     string filenameUsersList; 				// name of file with users
+    string fileDataInfo;
     map <string,cUser> usersList;           // map - contains nicknames, seen date, etc
 
 
