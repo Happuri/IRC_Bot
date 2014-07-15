@@ -198,6 +198,11 @@ bool cBot::parse(string line) {
 bool cBot::load() {
 	fstream file;
 	file.open(filenameUsersList.c_str(), ios::in);
+	if (!file.good()) {
+		cout << __FUNCTION__ << ":" << __LINE__ << " Can't open file: " << filename << endl;
+		return false;
+	}
+
 	string tmp;
 	cout << "\n " << __FUNCTION__ << ":" << __LINE__ << " Loading users list form file: " << filenameUsersList << endl;
 	while (!file.eof()) {
