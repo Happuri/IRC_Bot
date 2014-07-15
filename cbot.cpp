@@ -11,7 +11,7 @@ cBot::cBot(string &myNick, string &filename, string &outFilename) {
 }
 
 void cBot::tailF() {
-	string tmp = "", tmp2 = "", joined = "has joined", wordPing = "PING";
+	string tmp = "", tmp2 = "", joined = "has joined", wordPing = "> PING";
 	size_t found;
 	fstream file;
 	int tmpLen = 0;
