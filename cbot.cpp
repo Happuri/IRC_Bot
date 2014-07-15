@@ -93,6 +93,8 @@ void cBot::addUser(vector<string> data) {
 	pair<map<string, cUser>::iterator, bool> ret;
 	ret = this->usersList.insert(pair<string, cUser>(nickname, newUser));
 	sayHello(nickname);
+
+	save(nickname,time,date);
 	displayMap();
 }
 
@@ -165,7 +167,7 @@ bool cBot::parse(string line) {
 
 	pair<map<string, cUser>::iterator, bool> ret;
 	ret = this->usersList.insert(pair<string, cUser>(nickname, newUser));
-	save(nickname,time,date);
+
 
 	string toSay = "Hello again, " + getNick(nickname);
 	say(toSay);
@@ -178,8 +180,9 @@ bool cBot::load() {
 	fstream file;
 	file.open(filenameUsersList.c_str(), ios::in);
 	string tmp;
+	cout << "Loading users list form file: " << filenameUsersList << endl;
 	while (!file.eof()) {
-		getline(file, tmp); //cout << tmp << endl;
+		getline(file, tmp); cout << tmp << endl;
 		parse(tmp);
 	}
 	displayMap();
@@ -204,12 +207,20 @@ bool cBot::save() {
 bool cBot::save(string &nick, string &time, string &date) {
 	fstream file;
 	file.open(filenameUsersList.c_str(), ios::out | ios::app);
+	if(!file.good()) {
+		cout << "Error with saving user to file. Can't open file: " << filenameUsersList << endl;
+		return false;
+	}
+
+	cout << "Saving to file: ";
+	cout << nick << separator << date << separator << time << separator << "\n";
+
 	file << nick << separator << date << separator << time << separator << "\n";
 	file.close();
 	return true;
 }
 
 cBot::~cBot() {
-
+	cout << "--------------------------------------------------------------------" << endl;
 }
 
