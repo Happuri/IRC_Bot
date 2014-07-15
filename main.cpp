@@ -15,6 +15,7 @@
 using namespace std;
 // how to start:
 // Debug/Bot nick server room
+// ./start-bot.sh room
 int main(int argc, char* argv[]) {
 	string botname, server, room, room2;
 
@@ -34,7 +35,6 @@ int main(int argc, char* argv[]) {
 
 	cBot testing(botname, server, room);
 	testing.tailF();
-
 	//testing.sayHelloWorld();
 
 	return 0;

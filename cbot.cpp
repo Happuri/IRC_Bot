@@ -5,6 +5,7 @@ cBot::cBot(string &myNick, string &server, string &room) {
 	string dir_ii = "ii-data/";
 	string dir_u = "users/";
 	string dir_data = "data/";
+
 	this->myNick = myNick;
 	this->server = server;
 	this->room = room;
@@ -15,15 +16,14 @@ cBot::cBot(string &myNick, string &server, string &room) {
 	this->separator = "|";
 
 	string join = "echo /j '" + room + "' >> " + dir_ii + server + "/in";
-	cout << "Executing command: " << join << endl;
+	cout << __FUNCTION__ << ": Joining room. Executing command: " << join << endl;
 	system(join.c_str());
 	string createFile = "touch " + filenameUsersList;
-	cout << "Executing command: " << createFile << endl;
+	cout << __FUNCTION__ << ": Creating file with users list. Executing command: " << createFile << endl;
 	system(createFile.c_str()); // TODO nicer way to create file if not exist
 
-
 	if (!load())
-		cout << "Error with loads users list" << endl;
+		cout << __FUNCTION__ << ": Error with loads users list" << endl;
 	printInfo();
 }
 
@@ -33,21 +33,24 @@ void cBot::tailF() {
 	fstream file;
 	int tmpLen = 0;
 
-	do {
-		//cout << "run\n" << endl;
+	do { // infinite loop
+		 // open out file
 		file.open(this->filename.c_str(), ios::in);
+		if (!file.good()) {
+			cout << __FUNCTION__ << ":" << __LINE__ << " Can't open file: " << filename << endl;
+		}
 
 		if (checkLenght(file) != tmpLen) {
 			file.seekg(tmpLen, file.beg);
 
 			tmpLen = checkLenght(file);
-			cout << tmpLen << endl;
+			cout << __FUNCTION__ << ":" << __LINE__ << ": tmpLen: " << tmpLen << endl;
 
 			while (!file.eof()) {
 				getline(file, tmp);
 				//file >> tmp;
 				if (tmp != tmp2) {
-					cout << tmp << " ";
+					cout << __FUNCTION__ << ":" << __LINE__ << ": " << tmp << " ";
 					tmp2 = tmp;
 					found = tmp.find(joined);
 
@@ -61,7 +64,6 @@ void cBot::tailF() {
 					if (found != string::npos) {
 						cout << "---PING---" << endl;
 						PingPong();
-
 					}
 				}
 			}
@@ -69,7 +71,6 @@ void cBot::tailF() {
 		//cout << "\nsleeping\n" << endl;
 		sleep(5);
 		file.close();
-
 	} while (true);
 }
 
@@ -91,16 +92,17 @@ void cBot::displayFile(fstream &file) {
 }
 
 void cBot::addUser(vector<string> data) {
-	// reading data from vector
-	
-	if(data.at(2) != "-!-"){
+	// new user really joined?
+	if (data.at(2) != "-!-") {
 		return;
 	}
+
+	// reading data from vector
 	string &nickname = data.at(3);
 	string &date = data.at(0);
 	string &time = data.at(1);
 
-	// if element exist
+	// if element exist in map
 	map<string, cUser>::iterator it = this->usersList.find(nickname);
 	if (it != usersList.end()) {
 		// says hello again and returns
@@ -111,6 +113,8 @@ void cBot::addUser(vector<string> data) {
 		say(toSay);
 		return;
 	}
+
+	// if not exist - create them and save to file
 	cUser newUser(time, date);
 
 	pair<map<string, cUser>::iterator, bool> ret;
@@ -132,7 +136,6 @@ vector<string> cBot::splitString(string &toSplit, string delimiter) {
 		data.push_back(token);
 	}
 	return data;
-
 }
 
 void cBot::displayMap() {
@@ -154,7 +157,6 @@ void cBot::sayHello(string &username) {
 		return;
 	string toSay = "Hello " + nick;
 	say(toSay);
-
 }
 
 string cBot::getNick(string &all) {
@@ -170,7 +172,6 @@ void cBot::sayHelloWorld() {
 void cBot::PingPong() {
 	string wordPong = "PONG";
 	say(wordPong);
-
 }
 
 bool cBot::parse(string line) {
@@ -191,21 +192,17 @@ bool cBot::parse(string line) {
 	pair<map<string, cUser>::iterator, bool> ret;
 	ret = this->usersList.insert(pair<string, cUser>(nickname, newUser));
 
-	//string toSay = "Hello again, " + getNick(nickname);
-	//say(toSay);
-
 	return true;
-
 }
 
 bool cBot::load() {
 	fstream file;
 	file.open(filenameUsersList.c_str(), ios::in);
 	string tmp;
-	cout << "\nLoading users list form file: " << filenameUsersList << endl;
+	cout << "\n " << __FUNCTION__ << ":" << __LINE__ << " Loading users list form file: " << filenameUsersList << endl;
 	while (!file.eof()) {
 		getline(file, tmp);
-		cout << tmp << endl;
+		cout << __FUNCTION__ << ": " << tmp << endl;
 		parse(tmp);
 	}
 	displayMap();
@@ -215,14 +212,12 @@ bool cBot::load() {
 }
 
 bool cBot::save() {
-	// open file
 	fstream file;
 	file.open(filenameUsersList.c_str(), ios::out | ios::trunc);
 
 	map<string, cUser>::iterator it = this->usersList.begin();
 	for (it = this->usersList.begin(); it != this->usersList.end(); ++it)
-		file << it->first << separator << it->second.toString() << separator
-				<< "\n";
+		file << it->first << separator << it->second.toString() << separator << "\n";
 	file.close();
 	return true;
 }
@@ -231,8 +226,7 @@ bool cBot::save(string &nick, string &time, string &date) {
 	fstream file;
 	file.open(filenameUsersList.c_str(), ios::out | ios::app);
 	if (!file.good()) {
-		cout << "Error with saving user to file. Can't open file: "
-				<< filenameUsersList << endl;
+		cout << __FUNCTION__ << ":" << __LINE__ << ": Error with saving user to file. Can't open file: " << filenameUsersList << endl;
 		return false;
 	}
 
@@ -245,9 +239,7 @@ bool cBot::save(string &nick, string &time, string &date) {
 }
 
 cBot::~cBot() {
-	cout
-			<< "\n--------------------------------------------------------------------"
-			<< endl;
+	cout << "\n--------------------------------------------------------------------" << endl;
 }
 
 void cBot::printInfo() {
@@ -261,5 +253,4 @@ void cBot::printInfo() {
 	cout << "               Data: " << fileDataInfo << endl;
 	cout << "        -------END INFO-------" << endl;
 }
-
 
