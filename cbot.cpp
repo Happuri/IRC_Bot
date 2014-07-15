@@ -84,6 +84,9 @@ void cBot::addUser(vector<string> data) {
 	map<string, cUser>::iterator it = this->usersList.find(nickname);
 	if (it != usersList.end()) {
 		// says hello again and returns
+		if (getNick(nickname) == this->myNick){
+			return;
+			}
 		string toSay = "Hello again, " + getNick(nickname);
 		say(toSay);
 		return;
