@@ -16,10 +16,12 @@ cBot::cBot(string &myNick, string &server, string &room) {
 	this->separator = "|";
 
 	string join = "echo /j '" + room + "' >> " + dir_ii + server + "/in";
-	cout << __FUNCTION__ << ": Joining room. Executing command: " << join << endl;
+	cout << DBG << "Joining room. Executing command: " << join << endl;
 	system(join.c_str());
+	cout << DBG << "Sleeping" << endl;
+	sleep(15);
 	string createFile = "touch " + filenameUsersList;
-	cout << __FUNCTION__ << ": Creating file with users list. Executing command: " << createFile << endl;
+	cout << DBG << "Creating file with users list. Executing command: " << createFile << endl;
 	system(createFile.c_str()); // TODO nicer way to create file if not exist
 
 	if (!load())
@@ -37,33 +39,33 @@ void cBot::tailF() {
 		 // open out file
 		file.open(this->filename.c_str(), ios::in);
 		if (!file.good()) {
-			cout << __FUNCTION__ << ":" << __LINE__ << " Can't open file: " << filename << endl;
-		}
+			cout << DBG << " Can't open file: " << filename << endl;
+		} else {
+			if (checkLenght(file) != tmpLen) {
+				file.seekg(tmpLen, file.beg);
 
-		if (checkLenght(file) != tmpLen) {
-			file.seekg(tmpLen, file.beg);
+				tmpLen = checkLenght(file);
+				cout << DBG << ": tmpLen: " << tmpLen << endl;
 
-			tmpLen = checkLenght(file);
-			cout << __FUNCTION__ << ":" << __LINE__ << ": tmpLen: " << tmpLen << endl;
+				while (!file.eof()) {
+					getline(file, tmp);
+					//file >> tmp;
+					if (tmp != tmp2) {
+						cout << DBG << tmp << " ";
+						tmp2 = tmp;
+						found = tmp.find(joined);
 
-			while (!file.eof()) {
-				getline(file, tmp);
-				//file >> tmp;
-				if (tmp != tmp2) {
-					cout << __FUNCTION__ << ":" << __LINE__ << ": " << tmp << " ";
-					tmp2 = tmp;
-					found = tmp.find(joined);
+						// if new user has joined adds him to map
+						if (found != string::npos) {
+							cout << "---New user joined!---" << endl;
+							addUser(splitString(tmp, " "));
+						}
 
-					// if new user has joined adds him to map
-					if (found != string::npos) {
-						cout << "---New user joined!---" << endl;
-						addUser(splitString(tmp, " "));
-					}
-
-					found = tmp.find(wordPing);
-					if (found != string::npos) {
-						cout << "---PING---" << endl;
-						PingPong();
+						found = tmp.find(wordPing);
+						if (found != string::npos) {
+							cout << "---PING---" << endl;
+							PingPong();
+						}
 					}
 				}
 			}
@@ -199,15 +201,15 @@ bool cBot::load() {
 	fstream file;
 	file.open(filenameUsersList.c_str(), ios::in);
 	if (!file.good()) {
-		cout << __FUNCTION__ << ":" << __LINE__ << " Can't open file: " << filename << endl;
+		cout << DBG << "Can't open file: " << filename << endl;
 		return false;
 	}
 
 	string tmp;
-	cout << "\n " << __FUNCTION__ << ":" << __LINE__ << " Loading users list form file: " << filenameUsersList << endl;
+	cout << "\n " << DBG << " Loading users list form file: " << filenameUsersList << endl;
 	while (!file.eof()) {
 		getline(file, tmp);
-		cout << __FUNCTION__ << ": " << tmp << endl;
+		cout << DBG << tmp << endl;
 		parse(tmp);
 	}
 	displayMap();
@@ -231,11 +233,11 @@ bool cBot::save(string &nick, string &time, string &date) {
 	fstream file;
 	file.open(filenameUsersList.c_str(), ios::out | ios::app);
 	if (!file.good()) {
-		cout << __FUNCTION__ << ":" << __LINE__ << ": Error with saving user to file. Can't open file: " << filenameUsersList << endl;
+		cout << DBG << "Error with saving user to file. Can't open file: " << filenameUsersList << endl;
 		return false;
 	}
 
-	cout << "Saving to file: ";
+	cout << DBG << "Saving to file: ";
 	cout << nick << separator << date << separator << time << separator << "\n";
 
 	file << nick << separator << date << separator << time << separator << "\n";

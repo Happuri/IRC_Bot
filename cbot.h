@@ -8,6 +8,9 @@
 #include <stdlib.h>
 
 #include "cuser.h"
+
+#define DBG __FUNCTION__<<":"<< __LINE__<<"\t"
+
 using namespace std;
 
 class cBot
