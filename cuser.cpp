@@ -1,12 +1,12 @@
 #include "cuser.h"
 
-cUser::cUser(string &mSeenTime, string &mSeenDate) {
-	this->mSeenTime = mSeenTime;
-	this->mSeenDate = mSeenDate;
+cUser::cUser(string &mSeenFirstTime, string &mSeenFirstDate) {
+	this->mSeenFirstTime = mSeenFirstTime;
+	this->mSeenFirstDate = mSeenFirstDate;
 
 }
 
 string cUser::toString() {
-	return mSeenDate+"|"+mSeenTime;
+	return mSeenFirstDate+"|"+mSeenFirstTime;
 
 }

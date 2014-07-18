@@ -16,14 +16,15 @@ using namespace std;
 // how to start:
 // Debug/Bot nick server room
 // ./start-bot.sh room
+// TODO integrate with ii
 int main(int argc, char* argv[]) {
 	string botname, server, room, room2;
 
-	if (argc == 4) { // TODO some validation
+	if (argc == 4) {
 		botname = argv[1];
 		server = argv[2];
 		room2 = argv[3];
-	} else { // TODO get this data from conf file (?)
+	} else {
 		cout << "No params, exit" << endl;
 		return 0;
 

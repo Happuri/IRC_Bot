@@ -11,8 +11,12 @@ public:
     cUser(string &mSeenTime, string &mSeenDate);
     string toString();
 private:
-    string mSeenTime;
-    string mSeenDate;
+    string mSeenFirstTime;
+    string mSeenFirstDate;
+
+    // TODO
+    string mSeenLastTime;
+    string mSeenLastTime;
 };
 
 #endif // CUSER_H

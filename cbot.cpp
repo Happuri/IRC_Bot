@@ -1,6 +1,7 @@
 #include "cbot.h"
 
 cBot::cBot(string &myNick, string &server, string &room) {
+// TODO: Initialization Lists here
 	cout << "\nStarting bot" << endl;
 	string dir_ii = "ii-data/";
 	string dir_u = "users/";
@@ -15,7 +16,7 @@ cBot::cBot(string &myNick, string &server, string &room) {
 	this->fileDataInfo = dir_data + server + "/" + room + "/data.txt";
 	this->separator = "|";
 
-	string join = "echo /j '" + room + "' >> " + dir_ii + server + "/in";
+	string join = "echo '/j " + room + "' >> " + dir_ii + server + "/in";
 	cout << DBG << "Joining room. Executing command: " << join << endl;
 	system(join.c_str());
 	cout << DBG << "Sleeping" << endl;
@@ -25,7 +26,7 @@ cBot::cBot(string &myNick, string &server, string &room) {
 	system(createFile.c_str()); // TODO nicer way to create file if not exist
 
 	if (!load())
-		cout << __FUNCTION__ << ": Error with loads users list" << endl;
+		cout << DBG << ": Error with loads users list" << endl;
 	printInfo();
 }
 
@@ -70,8 +71,8 @@ void cBot::tailF() {
 				}
 			}
 		}
-		//cout << "\nsleeping\n" << endl;
-		sleep(5);
+		cout << DBG << "sleeping\n" << endl;
+		sleep(15);
 		file.close();
 	} while (true);
 }
@@ -111,8 +112,9 @@ void cBot::addUser(vector<string> data) {
 		if (getNick(nickname) == this->myNick) {
 			return;
 		}
-		string toSay = "Hello again, " + getNick(nickname);
-		say(toSay);
+		// TODO update cUser: mSeenLastTime and *Date
+		string toSay = "Hello " + getNick(nickname) + ", nice to see You again :)";
+		say(toSay); // TODO
 		return;
 	}
 
@@ -157,7 +159,7 @@ void cBot::sayHello(string &username) {
 	string nick = getNick(username);
 	if (nick == this->myNick)
 		return;
-	string toSay = "Hello " + nick;
+	string toSay = "Hi, " + nick ;
 	say(toSay);
 }
 
@@ -177,8 +179,8 @@ void cBot::PingPong() {
 }
 
 bool cBot::parse(string line) {
-	// to parse:
-	// mempobot(mempobot@i.love.debian.org)|2014-06-09|01:36|
+// to parse:
+// mempobot(mempobot@i.love.debian.org)|2014-06-09|01:36|
 
 	if (line.empty())
 		return false;
