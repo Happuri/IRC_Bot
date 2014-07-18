@@ -1,0 +1,65 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+
+build: build-stamp
+build-stamp:
+	dh_testdir
+
+	# Building package
+	CFLAGS="$(CFLAGS)" $(MAKE) PREFIX=/usr
+
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+
+	# Cleaning package
+	[ ! -f Makefile ] || $(MAKE) clean
+
+	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+
+	# Installing package
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/ii PREFIX=/usr
+	rm -f =$(CURDIR)/debian/ii/usr/share/doc/ii/CHANGES
+
+	# Removing double files
+	rm -f debian/ii/usr/share/doc/ii/LICENSE
+
+binary-indep: build install
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs CHANGES
+	dh_installdocs
+	dh_install
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install

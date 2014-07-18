@@ -1,0 +1,99 @@
+ii (1.6-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Nico Golde <nion@debian.org>  Mon, 31 Jan 2011 21:48:11 +0100
+
+ii (1.5-1) unstable; urgency=low
+
+  * New upstream release.
+  * Switch to dpkg-source 3.0 (quilt) format
+  * Bump policy version, no changes needed
+  * Use paragraphs rather than asterisks in NEWS.Debian
+
+ -- Nico Golde <nion@debian.org>  Wed, 26 Jan 2011 12:15:37 +0100
+
+ii (1.4-3) unstable; urgency=low
+
+  * Replace echo with printf in query.sh so it doesn't need
+    to rely on the XSI extension of SuSv3 (Closes: #530976).
+
+ -- Nico Golde <nion@debian.org>  Mon, 01 Jun 2009 13:40:33 +0200
+
+ii (1.4-2) unstable; urgency=low
+
+  * Remove unneeded bashism in query script (Closes: #530103).
+  * Small copyright adjustments, nothing worth to mention.
+  * Bump policy version, no changes needed.
+  * Use dh_prep rather than dh_clean -k in debian/rules.
+
+ -- Nico Golde <nion@debian.org>  Sat, 23 May 2009 17:19:37 +0200
+
+ii (1.4-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Nico Golde <nion@debian.org>  Sat, 09 Aug 2008 13:48:56 +0200
+
+ii (1.3-2) unstable; urgency=low
+
+  * Bump to policy version 3.8.0, no changes needed.
+  * Bump compat level and debhelper dependency to 7.
+  * Make Homepage a real control field and fix URL.
+  * Fix tarball localtion in watch file.
+
+ -- Nico Golde <nion@debian.org>  Tue, 22 Jul 2008 18:54:24 +0200
+
+ii (1.3-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Nico Golde <nion@debian.org>  Sat, 14 Jul 2007 20:49:01 +0200
+
+ii (1.2-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Nico Golde <nion@debian.org>  Sat, 23 Jun 2007 13:45:51 +0200
+
+ii (1.1-3) unstable; urgency=low
+
+  * FIxed copyright years.
+
+ -- Nico Golde <nion@debian.org>  Sat, 09 Jun 2007 14:39:59 +0200
+
+ii (1.1-2) unstable; urgency=low
+
+  * Handing package over to Nico.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 23 Apr 2007 08:42:00 +0200
+
+ii (1.1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Nico Golde <nion@debian.org>  Wed, 04 Apr 2007 10:41:46 +0200
+
+ii (1+fixed-3) unstable; urgency=low
+
+  * Updated Nicos email address.
+
+ -- Daniel Baumann <daniel@debian.org>  Wed, 28 Mar 2007 21:41:00 +0100
+
+ii (1+fixed-2) unstable; urgency=low
+
+  * Updated homepage in control and copyright.
+
+ -- Daniel Baumann <daniel@debian.org>  Wed, 14 Mar 2007 09:45:00 +0100
+
+ii (1+fixed-1) unstable; urgency=low
+
+  * Upstream did change the release tarball again.
+
+ -- Daniel Baumann <daniel@debian.org>  Sat,  3 Feb 2007 21:50:00 +0100
+
+ii (1-1) unstable; urgency=low
+
+  * Initial release (Closes: #340682).
+
+ -- Daniel Baumann <daniel@debian.org>  Sat,  3 Feb 2007 19:08:00 +0100
