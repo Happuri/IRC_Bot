@@ -28,6 +28,7 @@ public:
     bool load();							// loading users from file to map
     bool save();							// remove content of filenameUsersList and save actual map
     bool save(string &nick, string &time, string &date); // saving single user to file
+    bool save(string &nick, long &timeDate);
     void printInfo();						// printing informations about bot
 
 private:
@@ -46,8 +47,9 @@ private:
     string filenameUsersList; 				// name of file with users
     string fileDataInfo; 					// TODO
     map <string,cUser> usersList;           // map - contains nicknames, seen date, etc
-
-
+    
+    long nowTime;							// Timer
+	int timeOfNotHelloBreak;				
 };
 
 

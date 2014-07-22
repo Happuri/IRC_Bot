@@ -1,7 +1,6 @@
 #include "cbot.h"
 
 cBot::cBot(string &myNick, string &server, string &room) {
-// TODO: Initialization Lists here
 	cout << "\nStarting bot" << endl;
 	string dir_ii = "ii-data/";
 	string dir_u = "users/";
@@ -15,18 +14,20 @@ cBot::cBot(string &myNick, string &server, string &room) {
 	this->filenameUsersList = dir_u + server + "-" + room + "-users.txt";
 	this->fileDataInfo = dir_data + server + "/" + room + "/data.txt";
 	this->separator = "|";
+	this->nowTime = nowTime;
+	this->timeOfNotHelloBreak = timeOfNotHelloBreak;
 
-	string join = "echo '/j " + room + "' >> " + dir_ii + server + "/in";
+	string join = "echo /j '" + room + "' >> " + dir_ii + server + "/in";
 	cout << DBG << "Joining room. Executing command: " << join << endl;
 	system(join.c_str());
-	cout << DBG << "Sleeping" << endl;
-	sleep(15);
+	cout << DBG << "Sleeping(15)" << endl;
+	sleep(10);
 	string createFile = "touch " + filenameUsersList;
 	cout << DBG << "Creating file with users list. Executing command: " << createFile << endl;
 	system(createFile.c_str()); // TODO nicer way to create file if not exist
 
 	if (!load())
-		cout << DBG << ": Error with loads users list" << endl;
+		cout << __FUNCTION__ << ": Error with loads users list" << endl;
 	printInfo();
 }
 
@@ -71,8 +72,9 @@ void cBot::tailF() {
 				}
 			}
 		}
-		cout << DBG << "sleeping\n" << endl;
-		sleep(15);
+		//cout << "\nsleeping\n" << endl;
+		cout << DBG << "Sleeping(5): " << tmpLen << endl;
+		sleep(5);
 		file.close();
 	} while (true);
 }
@@ -95,6 +97,10 @@ void cBot::displayFile(fstream &file) {
 }
 
 void cBot::addUser(vector<string> data) {
+	
+	time(&nowTime);		//get system time
+	timeOfNotHelloBreak = 3660;
+	
 	// new user really joined?
 	if (data.at(2) != "-!-") {
 		return;
@@ -108,24 +114,34 @@ void cBot::addUser(vector<string> data) {
 	// if element exist in map
 	map<string, cUser>::iterator it = this->usersList.find(nickname);
 	if (it != usersList.end()) {
-		// says hello again and returns
+		
+		// not hello itself
 		if (getNick(nickname) == this->myNick) {
 			return;
 		}
-		// TODO update cUser: mSeenLastTime and *Date
-		string toSay = "Hello " + getNick(nickname) + ", nice to see You again :)";
-		say(toSay); // TODO
+		
+		string timeOfUserString = it->second.toStringtimeDateString();		//Get time of user joins and convert it to long
+		long timeOfUser = atol(timeOfUserString.c_str());
+
+		if ((nowTime - timeOfUser) > timeOfNotHelloBreak){
+			// says hello again and returns
+			string toSay = "Hello again, " + getNick(nickname);
+			say(toSay);
+			
+			it->second = nowTime;			// Replace time
+			save();							// Save all map to users.txt
+		}
 		return;
 	}
 
 	// if not exist - create them and save to file
-	cUser newUser(time, date);
+	cUser newUser(nowTime);
 
 	pair<map<string, cUser>::iterator, bool> ret;
 	ret = this->usersList.insert(pair<string, cUser>(nickname, newUser));
 	sayHello(nickname);
-
-	save(nickname, time, date);
+	cout << DBG << nowTime << endl;
+	save(nickname, nowTime);
 	displayMap();
 }
 
@@ -146,7 +162,7 @@ void cBot::displayMap() {
 	cout << "---DISPLAYING MAP!!---" << endl;
 	map<string, cUser>::iterator it = this->usersList.begin();
 	for (it = this->usersList.begin(); it != this->usersList.end(); ++it)
-		cout << "   " << it->first << " => " << it->second.toString() << endl;
+		cout << "   " << it->first << " => " << it->second.toStringtimeDateString() << endl;
 	cout << "------END MAP---------" << endl;
 }
 
@@ -159,7 +175,7 @@ void cBot::sayHello(string &username) {
 	string nick = getNick(username);
 	if (nick == this->myNick)
 		return;
-	string toSay = "Hi, " + nick ;
+	string toSay = "Hello " + nick;
 	say(toSay);
 }
 
@@ -179,8 +195,8 @@ void cBot::PingPong() {
 }
 
 bool cBot::parse(string line) {
-// to parse:
-// mempobot(mempobot@i.love.debian.org)|2014-06-09|01:36|
+	// to parse:
+	// mempobot(mempobot@i.love.debian.org)|2014-06-09|01:36|
 
 	if (line.empty())
 		return false;
@@ -188,11 +204,11 @@ bool cBot::parse(string line) {
 	vector<string> toSave = splitString(line, separator);
 
 	string &nickname = toSave.at(0);
-	string &date = toSave.at(1);
-	string &time = toSave.at(2);
-
-	cUser newUser(time, date);
-
+	string &nowTimeString = toSave.at(1);
+	
+	cUser newUser(nowTimeString);
+	cout << "nickname: " << nickname << endl;
+	cout << "nowTimeString: " << nowTimeString << endl;
 	pair<map<string, cUser>::iterator, bool> ret;
 	ret = this->usersList.insert(pair<string, cUser>(nickname, newUser));
 

@@ -2,6 +2,7 @@
 #define CUSER_H
 
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -9,14 +10,15 @@ class cUser
 {
 public:
     cUser(string &mSeenTime, string &mSeenDate);
+    cUser(long &timeDate);
+    cUser(string &timeDateString);
     string toString();
+    string toStringtimeDateString();
 private:
-    string mSeenFirstTime;
-    string mSeenFirstDate;
-
-    // TODO
-    string mSeenLastTime;
-    string mSeenLastTime;
+    string mSeenTime;
+    string mSeenDate;
+	string timeDateString;
+	long timeDate;
 };
 
 #endif // CUSER_H
