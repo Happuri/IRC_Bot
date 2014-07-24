@@ -21,6 +21,7 @@ public:
     void tailF();                           // equivalent "tail -f" bash command, notify if new user joins
     void displayFile(fstream &file);        // displays contents of a file
     void displayMap();                      // displays contents of a map
+    void displayMapOfCustomData();
     void say(string &what);					// says in irc
     void sayHello(string &username);		// says "hello", when user joins first time
     void sayHelloWorld();					// to tests
@@ -29,6 +30,7 @@ public:
     bool save();							// remove content of filenameUsersList and save actual map
     bool save(string &nick, string &time, string &date); // saving single user to file
     bool save(string &nick, long &timeDate);
+    bool loadCustomData();					// Loading and parsing custom data
     void printInfo();						// printing informations about bot
 
 private:
@@ -37,6 +39,7 @@ private:
     string getNick(string &all);			// returns plain nick
     vector<string> splitString(string &toSplit, string delimiter); // tails line to vector of strings
     bool parse(string line);				// parsing
+    bool parseCustomData(string line);
 
     string separator;						// | used in users list
     string myNick;							// bot's nickname
@@ -47,6 +50,7 @@ private:
     string filenameUsersList; 				// name of file with users
     string fileDataInfo; 					// TODO
     map <string,cUser> usersList;           // map - contains nicknames, seen date, etc
+    map <string,string> customData;			// map contains all provided data
     
     long nowTime;							// Timer
 	int timeOfNotHelloBreak;				
