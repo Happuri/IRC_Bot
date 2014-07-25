@@ -21,7 +21,7 @@ cBot::cBot(string &myNick, string &server, string &room) {
 	cout << DBG << "Joining room. Executing command: " << join << endl;
 	system(join.c_str());
 	cout << DBG << "Sleeping(10)" << endl;
-	sleep(10);
+	sleep(5);
 	string createFile = "touch " + filenameUsersList;
 	cout << DBG << "Creating file with users list. Executing command: " << createFile << endl;
 	system(createFile.c_str()); // TODO nicer way to create file if not exist
@@ -37,7 +37,7 @@ cBot::cBot(string &myNick, string &server, string &room) {
 }
 
 void cBot::tailF() {
-	string tmp = "", tmp2 = "", joined = "has joined", wordPing = "> PING";
+	string tmp = "", tmp2 = "", joined = "has joined", wordPing = "> !PING", users = "> !users";
 	size_t found;
 	fstream file;
 	int tmpLen = 0;
@@ -73,13 +73,19 @@ void cBot::tailF() {
 							cout << "---PING---" << endl;
 							PingPong();
 						}
+						
+						found = tmp.find(users);
+						if (found != string::npos) {
+							cout << "---users---" << endl;
+							NumberOfUsers();
+						}
 					}
 				}
 			}
 		}
 		//cout << "\nsleeping\n" << endl;
-		cout << DBG << "Sleeping(5): " << tmpLen << endl;
-		sleep(5);
+		//cout << DBG << "Sleeping(5): " << tmpLen << endl;
+		sleep(1);
 		file.close();
 	} while (true);
 }
@@ -190,8 +196,15 @@ void cBot::sayHello(string &username) {
 	string nick = getNick(username);
 	if (nick == this->myNick)
 		return;
+	
+	
 	string toSay = "Hello " + nick + " " + textHello;
 	say(toSay);
+	
+	/*string hello = "/notice " + nick + " " + textHello;
+	cout << DBG << "Hello new user. Executing command: " << hello << endl;
+	say(hello);
+	*/
 }
 
 string cBot::getNick(string &all) {
@@ -207,6 +220,21 @@ void cBot::sayHelloWorld() {
 void cBot::PingPong() {
 	string wordPong = "PONG";
 	say(wordPong);
+}
+
+void cBot::NumberOfUsers() {
+	stringstream ss;
+	int noOfUsers = 0;
+	map<string, cUser>::iterator it = this->usersList.begin();
+	for (it = this->usersList.begin(); it != this->usersList.end(); ++it){
+		noOfUsers++;
+	}
+	ss << noOfUsers;
+	cout << "NUMBER OF USERS!!!!" << endl;
+	string stringNumberOfUsers;// = noOfUsers + " users";
+	ss >> stringNumberOfUsers;
+	stringNumberOfUsers += " users are at bot users list";
+	say(stringNumberOfUsers);
 }
 
 bool cBot::parse(string line) {

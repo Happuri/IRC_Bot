@@ -6,6 +6,7 @@
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sstream>
 
 #include "cuser.h"
 
@@ -24,8 +25,9 @@ public:
     void displayMapOfCustomData();
     void say(string &what);					// says in irc
     void sayHello(string &username);		// says "hello", when user joins first time
-    void sayHelloWorld();					// to tests
+    void sayHelloWorld();					// TODO to tests
     void PingPong();						// to playing ping pong
+    void NumberOfUsers();					// displays number of users
     bool load();							// loading users from file to map
     bool save();							// remove content of filenameUsersList and save actual map
     bool save(string &nick, string &time, string &date); // saving single user to file
