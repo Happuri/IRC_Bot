@@ -4,9 +4,10 @@
 #include <unistd.h>
 #include <map>
 #include <vector>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <sstream>
+#include <curl/curl.h>
 
 #include "cuser.h"
 
@@ -28,12 +29,14 @@ public:
     void sayHelloWorld();					// TODO to tests
     void PingPong();						// to playing ping pong
     void NumberOfUsers();					// displays number of users
+    void MoneroPrice();
     bool load();							// loading users from file to map
     bool save();							// remove content of filenameUsersList and save actual map
     bool save(string &nick, string &time, string &date); // saving single user to file
     bool save(string &nick, long &timeDate);
     bool loadCustomData();					// Loading and parsing custom data
     void printInfo();						// printing informations about bot
+    size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream);
 
 private:
     void addUser(vector<string> data);      // getting data from tailF() and saving to map
@@ -51,11 +54,13 @@ private:
     string filename;                        // name of file to read
     string filenameUsersList; 				// name of file with users
     string fileDataInfo; 					// TODO
+    string priceOfMonero;                   // Price of monero
     map <string,cUser> usersList;           // map - contains nicknames, seen date, etc
     map <string,string> customData;			// map contains all provided data
     
     long nowTime;							// Timer
-	int timeOfNotHelloBreak;				
+    int timeOfNotHelloBreak;				//
+    int timeOfMoneroPrice = 0;              // Time of current file with price of monero
 };
 
 

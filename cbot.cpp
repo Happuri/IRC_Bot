@@ -14,7 +14,7 @@ cBot::cBot(string &myNick, string &server, string &room) {
 	this->filenameUsersList = dir_u + server + "-" + room + "-users.txt";
 	this->fileDataInfo = dir_data + server + "/" + room + "/data.txt";
 	this->separator = "|";
-	this->nowTime = nowTime;
+    this->nowTime;
 	this->timeOfNotHelloBreak = timeOfNotHelloBreak;
 
 	string join = "echo /j '" + room + "' >> " + dir_ii + server + "/in";
@@ -37,7 +37,7 @@ cBot::cBot(string &myNick, string &server, string &room) {
 }
 
 void cBot::tailF() {
-	string tmp = "", tmp2 = "", joined = "has joined", wordPing = "> !PING", users = "> !users";
+	string tmp = "", tmp2 = "", joined = "has joined", wordPing = "> !PING", users = "> !users", monero = "> !monero";
 	size_t found;
 	fstream file;
 	int tmpLen = 0;
@@ -79,6 +79,11 @@ void cBot::tailF() {
 							cout << "---users---" << endl;
 							NumberOfUsers();
 						}
+                        found = tmp.find(monero);
+						if (found !=string::npos){
+							cout << "---monero---" << endl;
+							MoneroPrice();
+                        }
 					}
 				}
 			}
@@ -110,7 +115,7 @@ void cBot::displayFile(fstream &file) {
 void cBot::addUser(vector<string> data) {
 	
 	time(&nowTime);		//get system time
-	timeOfNotHelloBreak = 3600 * 24 * 7;
+    timeOfNotHelloBreak = 3600 * 24 * 7 * 4;
 	
 	// new user really joined?
 	if (data.at(2) != "-!-") {
@@ -200,11 +205,6 @@ void cBot::sayHello(string &username) {
 	
 	string toSay = "Hello " + nick + " " + textHello;
 	say(toSay);
-	
-	/*string hello = "/notice " + nick + " " + textHello;
-	cout << DBG << "Hello new user. Executing command: " << hello << endl;
-	say(hello);
-	*/
 }
 
 string cBot::getNick(string &all) {
@@ -244,7 +244,7 @@ bool cBot::parse(string line) {
 	if (line.empty())
 		return false;
 
-	vector<string> toSave = splitString(line, separator);
+    vector<string> toSave = splitString(line, separator);
 
 	string &nickname = toSave.at(0);
 	string &nowTimeString = toSave.at(1);
@@ -351,6 +351,7 @@ bool cBot::save(string &nick, long &timeDate) {
 	fstream file;
 	file.open(filenameUsersList.c_str(), ios::out | ios::app);
 	if (!file.good()) {
+	
 		cout << DBG << "Error with saving user to file. Can't open file: " << filenameUsersList << endl;
 		return false;
 	}
@@ -361,6 +362,67 @@ bool cBot::save(string &nick, long &timeDate) {
 	file << nick << separator << timeDate << separator << "\n";
 	file.close();
 	return true;
+}
+
+size_t cBot::write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
+    size_t written;
+    written = fwrite(ptr, size, nmemb, stream);
+    return written;
+}
+
+void cBot::MoneroPrice(){
+	
+    time(&nowTime);
+    if((nowTime - timeOfMoneroPrice)>600){
+
+    CURLcode res;
+	int curl_global_init(CURL_GLOBAL_ALL);
+
+    CURL* curl = curl_easy_init( );
+    FILE* stream;
+    char* url = "https://www.coingecko.com/en/price_charts/monero/btc";
+    char* outfilename = "monero.txt";
+
+
+    stream = fopen(outfilename, "w");
+            curl_easy_setopt(curl, CURLOPT_URL, url);
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, stream);
+        res = curl_easy_perform(curl);
+        curl_easy_cleanup(curl);
+    fclose(stream);
+
+    fstream file;
+    file.open(outfilename, ios::in);
+
+    string tmp;
+    while (!file.eof()) {
+        getline(file, tmp);
+
+        string delimiter = "The value of Monero for today is <b>";
+        string delimiter2 = "</b>";
+        size_t pos = 0;
+
+    while ((pos = tmp.find(delimiter)) != string::npos) {
+        tmp.erase(0, pos + delimiter.length());
+        pos = tmp.find(delimiter2);
+        priceOfMonero = tmp.substr(0, pos);
+    }
+  }
+
+    file.close();
+
+    string toSay = "The value of Monero for today is: " + priceOfMonero;
+    say(toSay);
+
+    timeOfMoneroPrice=nowTime;
+
+    } else {
+
+        string toSay = "The value of Monero for today is: " + priceOfMonero;
+        say(toSay);
+
+    }
 }
 
 cBot::~cBot() {

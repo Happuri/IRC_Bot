@@ -9,7 +9,6 @@
 #include <pthread.h>
 
 #include <time.h> // Header to timer
-
 #include <unistd.h>
 
 #include "cuser.h"
@@ -20,6 +19,7 @@ using namespace std;
 // Debug/Bot nick server room
 // ./start-bot.sh room
 int main(int argc, char* argv[]) {
+	
 	string botname, server, room, room2;
 
 	if (argc == 4) { // TODO some validation
@@ -42,3 +42,4 @@ int main(int argc, char* argv[]) {
 
 	return 0;
 }
+

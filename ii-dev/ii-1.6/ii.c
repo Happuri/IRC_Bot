@@ -359,21 +359,21 @@ static void proc_server_cmd(char *buf) {
 		snprintf(message, PIPE_BUF, "-!- %s(%s) has joined %s", argv[TOK_NICKSRV], argv[TOK_USER], argv[TOK_TEXT]);
 	} else if(!strncmp("PART", argv[TOK_CMD], 5)) {
 		snprintf(message, PIPE_BUF, "-!- %s(%s) has left %s", argv[TOK_NICKSRV], argv[TOK_USER], argv[TOK_CHAN]);
-	} else if(!strncmp("MODE", argv[TOK_CMD], 5))
+	} else if(!strncmp("MODE", argv[TOK_CMD], 5)){
 		snprintf(message, PIPE_BUF, "-!- %s changed mode/%s -> %s %s", argv[TOK_NICKSRV], argv[TOK_CMD + 1] ? argv[TOK_CMD + 1] : "" , argv[TOK_CMD + 2]? argv[TOK_CMD + 2] : "", argv[TOK_CMD + 3] ? argv[TOK_CMD + 3] : "");
-	else if(!strncmp("QUIT", argv[TOK_CMD], 5))
+	} else if(!strncmp("QUIT", argv[TOK_CMD], 5)){
 		snprintf(message, PIPE_BUF, "-!- %s(%s) has quit \"%s\"", argv[TOK_NICKSRV], argv[TOK_USER], argv[TOK_TEXT] ? argv[TOK_TEXT] : "");
-	else if(!strncmp("NICK", argv[TOK_CMD], 5))
+	} else if(!strncmp("NICK", argv[TOK_CMD], 5)){
 		snprintf(message, PIPE_BUF, "-!- %s changed nick to %s", argv[TOK_NICKSRV], argv[TOK_TEXT]);
-	else if(!strncmp("TOPIC", argv[TOK_CMD], 6))
+	} else if(!strncmp("TOPIC", argv[TOK_CMD], 6)){
 		snprintf(message, PIPE_BUF, "-!- %s changed topic to \"%s\"", argv[TOK_NICKSRV], argv[TOK_TEXT] ? argv[TOK_TEXT] : "");
-	else if(!strncmp("KICK", argv[TOK_CMD], 5))
+	} else if(!strncmp("KICK", argv[TOK_CMD], 5)){
 		snprintf(message, PIPE_BUF, "-!- %s kicked %s (\"%s\")", argv[TOK_NICKSRV], argv[TOK_ARG], argv[TOK_TEXT] ? argv[TOK_TEXT] : "");
-	else if(!strncmp("NOTICE", argv[TOK_CMD], 7))
+	} else if(!strncmp("NOTICE", argv[TOK_CMD], 7)){
 		snprintf(message, PIPE_BUF, "-!- \"%s\")", argv[TOK_TEXT] ? argv[TOK_TEXT] : "");
-	else if(!strncmp("PRIVMSG", argv[TOK_CMD], 8))
+	} else if(!strncmp("PRIVMSG", argv[TOK_CMD], 8)){
 		snprintf(message, PIPE_BUF, "<%s> %s", argv[TOK_NICKSRV], argv[TOK_TEXT] ? argv[TOK_TEXT] : "");
-	if(!argv[TOK_CHAN] || !strncmp(argv[TOK_CHAN], nick, strlen(nick)))
+	} if(!argv[TOK_CHAN] || !strncmp(argv[TOK_CHAN], nick, strlen(nick)))
 		print_out(argv[TOK_NICKSRV], message);
 	else
 		print_out(argv[TOK_CHAN], message);
