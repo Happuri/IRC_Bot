@@ -25,6 +25,7 @@ public:
     void displayMap();                      // displays contents of a map
     void displayMapOfCustomData();
     void say(string &what);					// says in irc
+    void sayPM(string &what);				// says Private msg in irc
     void sayHello(string &username);		// says "hello", when user joins first time
     void sayHelloWorld();					// TODO to tests
     void PingPong();						// to playing ping pong

@@ -59,7 +59,7 @@ void cBot::tailF() {
 						cout << DBG << tmp << " ";
 						tmp2 = tmp;
 
-                        /*
+
 						found = tmp.find(joined);
 
 						// if new user has joined adds him to map
@@ -67,7 +67,7 @@ void cBot::tailF() {
 							cout << "---New user joined!---" << endl;
 							addUser(splitString(tmp, " "));
 						}
-*/
+
 						found = tmp.find(wordPing);
 						if (found != string::npos) {
 							cout << "---PING---" << endl;
@@ -82,7 +82,7 @@ void cBot::tailF() {
                         found = tmp.find(monero);
 						if (found !=string::npos){
 							cout << "---monero---" << endl;
-							MoneroPrice();
+                            MoneroPrice();
                         }
 
                         found = tmp.find(calc);
@@ -131,8 +131,6 @@ void cBot::addUser(vector<string> data) {
 
 	// reading data from vector
 	string &nickname = data.at(3);
-	string &date = data.at(0);
-	string &time = data.at(1);
 
 	// if element exist in map
 	map<string, cUser>::iterator it = this->usersList.find(nickname);
@@ -148,7 +146,7 @@ void cBot::addUser(vector<string> data) {
 
 		if ((nowTime - timeOfUser) > timeOfNotHelloBreak){
 			// says hello again and returns
-			string toSay = "Hello again, " + getNick(nickname);
+            string toSay = "/notice " + getNick(nickname) + " :Hello again, " + getNick(nickname);
 			say(toSay);
 			
 			it->second = nowTime;			// Replace time
@@ -201,14 +199,12 @@ void cBot::say(string &what) {
     std::ofstream streamFile(outFilename.c_str() , std::ios::app);
     cout << "good: " << streamFile.good() << endl;
     cout << "bad:  " << streamFile.bad() << endl;
-
     if (!streamFile.good())  {
         cout <<"FATAL - Error opening stream" <<endl;
     } else {
       streamFile << what << endl;
     }
 }
-
 
 void cBot::sayHello(string &username) {
 	map<string, string>::iterator it = this->customData.find("helloText");
@@ -218,7 +214,7 @@ void cBot::sayHello(string &username) {
 		return;
 	
 	
-	string toSay = "Hello " + nick + " " + textHello;
+    string toSay = "/notice " + nick + " :Hello " + nick + " " + textHello;
 	say(toSay);
 }
 
@@ -433,7 +429,7 @@ void cBot::getMoneroPrice(){
 }
 void cBot::MoneroPrice(){
     getMoneroPrice();
-    string toSay = "The value of Monero for today is: "+ priceOfMonero + " BTC";
+    string toSay = "Current value of Monero: "+ priceOfMonero + " BTC";
     say(toSay);
 }
 
@@ -454,14 +450,16 @@ void cBot::calcMonero(vector<string> data)  {
         double valueOf;
         double finalPrice;
         double doublePriceOfMonero = string2double(priceOfMonero.c_str());
-
+        string nickname = data.at(2);
+        nickname = nickname.substr(1, (nickname.size()-2));
         valueOf = string2double(data[4].c_str());
         finalPrice = doublePriceOfMonero * valueOf;
 
         string toSay;
         ostringstream ss;
         if (finalPrice > 0) {
-            ss << valueOf << " XMR = " << finalPrice << " BTC ";
+            ss << "/privmsg " << nickname << " :" << valueOf << " XMR = " << finalPrice << " BTC ";
+            cout << "ss: " << ss.str() << endl;
             toSay = ss.str();
 
         } else {
