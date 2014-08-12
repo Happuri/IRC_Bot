@@ -29,7 +29,9 @@ public:
     void sayHelloWorld();					// TODO to tests
     void PingPong();						// to playing ping pong
     void NumberOfUsers();					// displays number of users
-    void MoneroPrice();
+    void MoneroPrice();                     // displays price of monero
+    void calcMonero(vector<string> data);   // calc price of provide value of monero
+    void getMoneroPrice();
     bool load();							// loading users from file to map
     bool save();							// remove content of filenameUsersList and save actual map
     bool save(string &nick, string &time, string &date); // saving single user to file
@@ -45,6 +47,8 @@ private:
     vector<string> splitString(string &toSplit, string delimiter); // tails line to vector of strings
     bool parse(string line);				// parsing
     bool parseCustomData(string line);
+    double string2double(const char *strNr);     //convert string to double
+
 
     string separator;						// | used in users list
     string myNick;							// bot's nickname
@@ -60,7 +64,7 @@ private:
     
     long nowTime;							// Timer
     int timeOfNotHelloBreak;				//
-    int timeOfMoneroPrice = 0;              // Time of current file with price of monero
+    int timeOfMoneroPrice;                  // Time of current file with price of monero
 };
 
 

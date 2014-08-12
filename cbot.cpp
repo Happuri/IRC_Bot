@@ -5,7 +5,6 @@ cBot::cBot(string &myNick, string &server, string &room) {
 	string dir_ii = "ii-data/";
 	string dir_u = "users/";
 	string dir_data = "data/";
-
 	this->myNick = myNick;
 	this->server = server;
 	this->room = room;
@@ -14,8 +13,7 @@ cBot::cBot(string &myNick, string &server, string &room) {
 	this->filenameUsersList = dir_u + server + "-" + room + "-users.txt";
 	this->fileDataInfo = dir_data + server + "/" + room + "/data.txt";
 	this->separator = "|";
-    this->nowTime;
-	this->timeOfNotHelloBreak = timeOfNotHelloBreak;
+    this->timeOfMoneroPrice = 0;
 
 	string join = "echo /j '" + room + "' >> " + dir_ii + server + "/in";
 	cout << DBG << "Joining room. Executing command: " << join << endl;
@@ -37,7 +35,7 @@ cBot::cBot(string &myNick, string &server, string &room) {
 }
 
 void cBot::tailF() {
-	string tmp = "", tmp2 = "", joined = "has joined", wordPing = "> !PING", users = "> !users", monero = "> !monero";
+    string tmp = "", tmp2 = "", joined = "has joined", wordPing = "> !PING", users = "> !users", monero = "> !monero", calc = "> !calc";
 	size_t found;
 	fstream file;
 	int tmpLen = 0;
@@ -60,6 +58,8 @@ void cBot::tailF() {
 					if (tmp != tmp2) {
 						cout << DBG << tmp << " ";
 						tmp2 = tmp;
+
+                        /*
 						found = tmp.find(joined);
 
 						// if new user has joined adds him to map
@@ -67,7 +67,7 @@ void cBot::tailF() {
 							cout << "---New user joined!---" << endl;
 							addUser(splitString(tmp, " "));
 						}
-
+*/
 						found = tmp.find(wordPing);
 						if (found != string::npos) {
 							cout << "---PING---" << endl;
@@ -83,6 +83,13 @@ void cBot::tailF() {
 						if (found !=string::npos){
 							cout << "---monero---" << endl;
 							MoneroPrice();
+                        }
+
+                        found = tmp.find(calc);
+                        if (found !=string::npos){
+                            tmp = tmp + " ";
+                            cout << "---calcMonero---" << endl;
+                            calcMonero(splitString(tmp, " "));
                         }
 					}
 				}
@@ -191,9 +198,17 @@ void cBot::displayMapOfCustomData() {
 }
 
 void cBot::say(string &what) {
-	string command = "echo '" + what + "' >> " + outFilename;
-	system(command.c_str()); // TODO
+    std::ofstream streamFile(outFilename.c_str() , std::ios::app);
+    cout << "good: " << streamFile.good() << endl;
+    cout << "bad:  " << streamFile.bad() << endl;
+
+    if (!streamFile.good())  {
+        cout <<"FATAL - Error opening stream" <<endl;
+    } else {
+      streamFile << what << endl;
+    }
 }
+
 
 void cBot::sayHello(string &username) {
 	map<string, string>::iterator it = this->customData.find("helloText");
@@ -370,60 +385,95 @@ size_t cBot::write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     return written;
 }
 
-void cBot::MoneroPrice(){
+void cBot::getMoneroPrice(){
 	
     time(&nowTime);
-    if((nowTime - timeOfMoneroPrice)>600){
-
-    CURLcode res;
-	int curl_global_init(CURL_GLOBAL_ALL);
-
-    CURL* curl = curl_easy_init( );
-    FILE* stream;
-    char* url = "https://www.coingecko.com/en/price_charts/monero/btc";
-    char* outfilename = "monero.txt";
 
 
-    stream = fopen(outfilename, "w");
-            curl_easy_setopt(curl, CURLOPT_URL, url);
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, stream);
+    if((nowTime - timeOfMoneroPrice)>600) {
+        CURLcode res;
+        int curl_global_init(CURL_GLOBAL_ALL);
+
+        CURL* curl = curl_easy_init( );
+        FILE* stream;
+        string url = "https://www.coingecko.com/en/price_charts/monero/btc";
+        string outfilename = "monero.txt";
+
+
+        stream = fopen(outfilename.c_str(), "w");
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, stream);
         res = curl_easy_perform(curl);
         curl_easy_cleanup(curl);
-    fclose(stream);
+        fclose(stream);
 
-    fstream file;
-    file.open(outfilename, ios::in);
+        fstream file;
+        file.open(outfilename.c_str(), ios::in);
 
-    string tmp;
-    while (!file.eof()) {
-        getline(file, tmp);
+        string tmp;
+        while (!file.eof()) {
+            getline(file, tmp);
 
-        string delimiter = "The value of Monero for today is <b>";
-        string delimiter2 = "</b>";
-        size_t pos = 0;
+            string delimiter = "The value of Monero for today is <b>฿";
+            string delimiter2 = "</b>";
+            size_t pos = 0;
+            while ((pos = tmp.find(delimiter)) != string::npos) {
+                tmp.erase(0, pos + delimiter.length());
+                pos = tmp.find(delimiter2);
+                priceOfMonero = tmp.substr(0, pos);
+            }
+        }
 
-    while ((pos = tmp.find(delimiter)) != string::npos) {
-        tmp.erase(0, pos + delimiter.length());
-        pos = tmp.find(delimiter2);
-        priceOfMonero = tmp.substr(0, pos);
-    }
-  }
+        file.close();
 
-    file.close();
-
-    string toSay = "The value of Monero for today is: " + priceOfMonero;
-    say(toSay);
-
-    timeOfMoneroPrice=nowTime;
-
-    } else {
-
-        string toSay = "The value of Monero for today is: " + priceOfMonero;
-        say(toSay);
+        timeOfMoneroPrice=nowTime;
 
     }
 }
+void cBot::MoneroPrice(){
+    getMoneroPrice();
+    string toSay = "The value of Monero for today is: "+ priceOfMonero + " BTC";
+    say(toSay);
+}
+
+
+double cBot::string2double(const char *str)  {
+    char* endptr;
+    double value = strtod(str, &endptr);
+    if (*endptr) return 0;
+    return value;
+}
+
+void cBot::calcMonero(vector<string> data)  {
+
+    if (data.size()==5){
+
+        getMoneroPrice();
+
+        double valueOf;
+        double finalPrice;
+        double doublePriceOfMonero = string2double(priceOfMonero.c_str());
+
+        valueOf = string2double(data[4].c_str());
+        finalPrice = doublePriceOfMonero * valueOf;
+
+        string toSay;
+        ostringstream ss;
+        if (finalPrice > 0) {
+            ss << valueOf << " XMR = " << finalPrice << " BTC ";
+            toSay = ss.str();
+
+        } else {
+            toSay = "One cannot have a negative amount of money (I hope)";
+        }
+        say(toSay);
+
+    } else {
+        MoneroPrice();
+    }
+}
+
 
 cBot::~cBot() {
 	cout << "\n--------------------------------------------------------------------" << endl;
@@ -440,4 +490,3 @@ void cBot::printInfo() {
 	cout << "               Data: " << fileDataInfo << endl;
 	cout << "        -------END INFO-------" << endl;
 }
-
