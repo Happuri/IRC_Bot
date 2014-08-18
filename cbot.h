@@ -33,6 +33,7 @@ public:
     void MoneroPrice();                     // displays price of monero
     void calcMonero(vector<string> data);   // calc price of provide value of monero
     void getMoneroPrice();
+    void Help();                            // display usefull information (commands)
     bool load();							// loading users from file to map
     bool save();							// remove content of filenameUsersList and save actual map
     bool save(string &nick, string &time, string &date); // saving single user to file
@@ -45,7 +46,8 @@ private:
     void addUser(vector<string> data);      // getting data from tailF() and saving to map
     int checkLenght(fstream &file);         // returns numbers of characters in file
     string getNick(string &all);			// returns plain nick
-    vector<string> splitString(string &toSplit, string delimiter); // tails line to vector of strings
+    string getNick2(vector<string> data);	// returns plain nick
+    vector<string> splitString(string toSplit, string delimiter); // tails line to vector of strings
     bool parse(string line);				// parsing
     bool parseCustomData(string line);
     double string2double(const char *strNr);     //convert string to double
@@ -60,6 +62,7 @@ private:
     string filenameUsersList; 				// name of file with users
     string fileDataInfo; 					// TODO
     string priceOfMonero;                   // Price of monero
+    string nicknameGetNick2;                // nickname to getNick2
     map <string,cUser> usersList;           // map - contains nicknames, seen date, etc
     map <string,string> customData;			// map contains all provided data
     

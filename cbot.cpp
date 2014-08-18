@@ -35,7 +35,7 @@ cBot::cBot(string &myNick, string &server, string &room) {
 }
 
 void cBot::tailF() {
-    string tmp = "", tmp2 = "", joined = "has joined", wordPing = "> !PING", users = "> !users", monero = "> !monero", calc = "> !calc";
+    string tmp = "", tmp2 = "", joined = "has joined", wordPing = "> !PING", users = "> !users", monero = "> @price", calc = "> @calc", help = "> @help";
 	size_t found;
 	fstream file;
 	int tmpLen = 0;
@@ -59,29 +59,30 @@ void cBot::tailF() {
 						cout << DBG << tmp << " ";
 						tmp2 = tmp;
 
-
+/*
 						found = tmp.find(joined);
-
 						// if new user has joined adds him to map
 						if (found != string::npos) {
 							cout << "---New user joined!---" << endl;
 							addUser(splitString(tmp, " "));
-						}
+                        }
 
 						found = tmp.find(wordPing);
 						if (found != string::npos) {
 							cout << "---PING---" << endl;
 							PingPong();
 						}
-						
+
 						found = tmp.find(users);
 						if (found != string::npos) {
 							cout << "---users---" << endl;
 							NumberOfUsers();
 						}
+                        */
                         found = tmp.find(monero);
 						if (found !=string::npos){
-							cout << "---monero---" << endl;
+                            cout << "---monero---" << endl;
+                            getNick2(splitString(tmp, " "));
                             MoneroPrice();
                         }
 
@@ -89,7 +90,16 @@ void cBot::tailF() {
                         if (found !=string::npos){
                             tmp = tmp + " ";
                             cout << "---calcMonero---" << endl;
+                            getNick2(splitString(tmp, " "));
                             calcMonero(splitString(tmp, " "));
+                        }
+
+                        found = tmp.find(help);
+                        if (found !=string::npos){
+                            tmp = tmp + " ";
+                            cout << "---help---" << endl;
+                            getNick2(splitString(tmp, " "));
+                            Help();
                         }
 					}
 				}
@@ -166,7 +176,7 @@ void cBot::addUser(vector<string> data) {
 	displayMap();
 }
 
-vector<string> cBot::splitString(string &toSplit, string delimiter) {
+vector<string> cBot::splitString(string toSplit, string delimiter) {
 	string token;
 	size_t pos = 0;
 	vector<string> data;
@@ -209,7 +219,7 @@ void cBot::say(string &what) {
 void cBot::sayHello(string &username) {
 	map<string, string>::iterator it = this->customData.find("helloText");
 	string textHello = it->second;
-	string nick = getNick(username);
+    string nick = getNick(username);
 	if (nick == this->myNick)
 		return;
 	
@@ -427,9 +437,10 @@ void cBot::getMoneroPrice(){
 
     }
 }
+
 void cBot::MoneroPrice(){
     getMoneroPrice();
-    string toSay = "Current value of Monero: "+ priceOfMonero + " BTC";
+    string toSay = /*"/notice " + nicknameGetNick2 + */"Current value of Monero: "+ priceOfMonero + " BTC";
     say(toSay);
 }
 
@@ -450,26 +461,43 @@ void cBot::calcMonero(vector<string> data)  {
         double valueOf;
         double finalPrice;
         double doublePriceOfMonero = string2double(priceOfMonero.c_str());
+        /*
         string nickname = data.at(2);
         nickname = nickname.substr(1, (nickname.size()-2));
+        */
         valueOf = string2double(data[4].c_str());
         finalPrice = doublePriceOfMonero * valueOf;
 
         string toSay;
         ostringstream ss;
         if (finalPrice > 0) {
-            ss << "/privmsg " << nickname << " :" << valueOf << " XMR = " << finalPrice << " BTC ";
-            cout << "ss: " << ss.str() << endl;
+            ss << /*"/notice " << nicknameGetNick2 << " :" << */valueOf << " XMR = " << finalPrice << " BTC ";
             toSay = ss.str();
 
         } else {
-            toSay = "One cannot have a negative amount of money (I hope)";
+            toSay = /*"/notice" + nicknameGetNick2 + */"One cannot have a negative amount of money (I hope)";
         }
         say(toSay);
-
     } else {
         MoneroPrice();
     }
+}
+
+
+string cBot::getNick2(vector<string> data){
+
+    nicknameGetNick2 = data.at(2);
+    nicknameGetNick2 = nicknameGetNick2.substr(1, (nicknameGetNick2.size()-2));
+    return nicknameGetNick2;
+}
+
+
+void cBot::Help()  {
+
+    string toSay;
+    toSay = "/notice " + nicknameGetNick2 + " :@price - display current price of Monero || @calc - calc price of Monero || @help - display help";
+    say(toSay);
+
 }
 
 
